@@ -15,7 +15,6 @@ module AwsRegion
 
   AWS_REGIONS = [
     'eu-west-1',
-    'eu-central-1',
     'us-east-1',
     'us-gov-west-1',
     'cn-north-1',
@@ -29,7 +28,6 @@ module AwsRegion
 
   S3_LOCATIONS = [
     'EU', 'eu-west-1',
-    'eu-central-1',
     'US',
     'us-gov-west-1',
     'cn-north-1',

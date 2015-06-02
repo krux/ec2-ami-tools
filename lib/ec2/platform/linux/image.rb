@@ -474,31 +474,12 @@ module EC2
             # grub. The options below change the behavior back to the
             # expected RHEL5 behavior if we are bundling disk images. This
             # is not ideal, but oh well.
-            if ['ext2', 'ext3', 'ext4'].include?(type)
-              # Clear all the defaults specified in /etc/mke2fs.conf
-              features = ['none']
-
-              # Get Filesytem Features as reported by dumpe2fs
-              output = evaluate("dumpe2fs -h %s | grep 'Filesystem features'" % root)
-              parts = output.split(':')[1].lstrip.split(' ')
-              features.concat(parts)
-              features.delete('needs_recovery')
-              if features.include?('64bit')
-                puts "WARNING: 64bit filesystem flag detected on root device (#{root}), resulting image may not boot"
-              end
-
-              if self.is_disk_image?
-                mkfs = [ '/sbin/mke2fs -t %s -v -m 1' % type ]
-                mkfs << ['-O', features.join(',')]
-                if ['ext2', 'ext3',].include?(type)
-                  mkfs << [ '-I 128 -i 8192' ]
-                end
-              else
-                mkfs << ['-F']
-                mkfs << ['-O', features.join(',')]
+            if self.is_disk_image? and ['ext2', 'ext3', 'ext4'].include?(type)
+              mkfs = [ '/sbin/mke2fs -t %s -v -m 1' % type ]
+              if ['ext2', 'ext3',].include?(type)
+                mkfs << [ '-I 128 -i 8192' ]
               end
             else
-              # Unknown case
               mkfs << ['-F']
             end
             mkfs << [ '-L', label] unless label.to_s.empty?
@@ -760,7 +741,7 @@ module EC2
             fstab_content = make_fstab
             File.open( fstab, 'w' ) { |f| f.write( fstab_content ) }
             puts "/etc/fstab:"
-            fstab_content.each_line do |s|
+            fstab_content.each do |s|
               puts "\t #{s}"
             end
           end

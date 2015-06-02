@@ -23,13 +23,12 @@ module EC2
           headers.get
       end
  
-      def self.curl_args_sigv4(url, region, bucket, http_method, optional_headers, user, pass, data=nil)
+      def self.curl_args_sigv4(url, region, bucket, http_method, options, user, pass, data=nil)
         aws_secret_access_key = pass
         aws_access_key_id = user
         if (user.is_a?(Hash))
             aws_access_key_id = user['aws_access_key_id']
             aws_secret_access_key = user['aws_secret_access_key']
-            delegation_token = user['aws_delegation_token']
         end
         host, path, query = parseURL(url, bucket)
         hexdigest = if data
@@ -37,10 +36,7 @@ module EC2
         else
           HeadersV4::hexdigest ""
         end
-        optional_headers ||= {}
-        unless delegation_token.nil?
-            optional_headers[EC2::Common::Headers::X_AMZ_SECURITY_TOKEN] = delegation_token
-        end
+        options ||= {}
         headers_obj = HeadersV4.new({:host => host,
                                :hexdigest_body => hexdigest,
                                :region => region,
@@ -50,7 +46,7 @@ module EC2
                                :querystring => query,
                                :access_key_id => aws_access_key_id,
                                :secret_access_key => aws_secret_access_key},
-                               optional_headers)
+                               options)
         headers = headers_obj.add_authorization!
         headers
       end
