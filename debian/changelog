@@ -1,3 +1,7 @@
+ec2-ami-tools (1.5.7-1) unstable; urgency=low
+
+  * Updating to aws version 1.5.7
+
 ec2-ami-tools (1.5.3-1) unstable; urgency=low
 
   * Fix some path issues.
