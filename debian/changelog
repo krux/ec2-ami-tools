@@ -1,3 +1,9 @@
+ec2-ami-tools (1.5.7-1) unstable; urgency=low
+
+  * updating aws package
+
+ -- Erin Willingham <ewillingham@krux.com>  Tue, 02 Jun 2015 22:05:00 +0000
+
 ec2-ami-tools (1.5.3-1) unstable; urgency=low
 
   * Fix some path issues.
